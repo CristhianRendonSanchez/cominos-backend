@@ -19,8 +19,8 @@ Comandos para trabajar con el motor del ORM Prisma
 - Push the Prisma schema state to the database
   - `npx prisma db push`
 
-## NestJS
+## express
 
-- Para generar un nuevo modulo dentro de la app correr el comando: `nest generate resource` y poner el nombre en plural del modulo, despues seleccionar REST API y despues Yes a la generacion del CRUD automaticamente
+- Para correr el proyecto ejecutar el comando `npm run dev`
 
-- Para correr el proyecto ejecutar el comando `npm run start:dev`
+- Para instalar librerias `npm i`
