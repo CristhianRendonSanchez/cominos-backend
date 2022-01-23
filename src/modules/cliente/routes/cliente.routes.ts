@@ -11,8 +11,9 @@ class ClienteRoutes {
 
   routes() {
     this.router.get('/GetCliente/:cedula', clienteControllers.GetCliente);
-    this.router.post('/PostCliente', clienteControllers.PostCliente);
-    this.router.put('/PutCliente', clienteControllers.PutCliente);
+    //this.router.post('/PostCliente', clienteControllers.PostCliente);
+    //this.router.put('/PutCliente', clienteControllers.PutCliente);
+    this.router.post('/UpsertCliente', clienteControllers.UpsertCliente);
     this.router.delete('/DeleteCliente', clienteControllers.DeleteCliente);
   }
 }
