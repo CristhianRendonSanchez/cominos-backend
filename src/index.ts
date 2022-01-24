@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { join } from 'path';
 import errorRoutes from './modules/error/routes/error.routes';
 import productoRoutes from './modules/producto/routes/producto.routes';
+import clienteRoutes from './modules/cliente/routes/cliente.routes';
+const bodyParser = require('body-parser');
 
 class Server {
   private app: Application;
@@ -18,8 +20,13 @@ class Server {
     console.log(process.env.PORT);
   }
   routes() {
+    
+    this.app.use(bodyParser.json()) // for parsing application/json
+    this.app.use(bodyParser.urlencoded({ extended: true }))
+
     this.app.use('/Api/Error', errorRoutes);
     this.app.use('/Api/Producto', productoRoutes);
+    this.app.use('/Api/Cliente', clienteRoutes);
   }
 
   start() {
