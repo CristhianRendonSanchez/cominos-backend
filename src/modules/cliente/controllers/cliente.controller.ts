@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import errorHandlerObject from '../../error/controllers/error.class';
-import { cliente, PrismaClient} from '@prisma/client'
+import { PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient();
 
@@ -8,7 +8,7 @@ class ClienteControllers {
 
   public async UpsertCliente(req: Request, res: Response): Promise<void> {
     try{
-      let { cedula, ciudad, empresa, correo, telefono, createdAt, updatedAt } = req.body;
+      let { cedula, ciudad, empresa, correo, telefono} = req.body;
       const cliente = await prisma.cliente.upsert({
         where: {
           cedula: cedula
@@ -31,7 +31,7 @@ class ClienteControllers {
     }catch(error) {
       let Error: object = await errorHandlerObject.ErrorHandler(
         error,
-        'GetCliente (Controller)',
+        'UpsertCliente (Controller)',
         true,
       );
       res.status(500).json(Error);
@@ -74,7 +74,7 @@ class ClienteControllers {
     } catch (error) {
       let Error: object = await errorHandlerObject.ErrorHandler(
         error,
-        'GetCliente (Controller)',
+        'DeleteCliente (Controller)',
         true,
       );
       res.status(500).json(Error);

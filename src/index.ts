@@ -4,6 +4,7 @@ import { join } from 'path';
 import errorRoutes from './modules/error/routes/error.routes';
 import productoRoutes from './modules/producto/routes/producto.routes';
 import clienteRoutes from './modules/cliente/routes/cliente.routes';
+import usuarioRoutes from './modules/usuario/routes/usuario.routes';
 const bodyParser = require('body-parser');
 
 class Server {
@@ -27,6 +28,7 @@ class Server {
     this.app.use('/Api/Error', errorRoutes);
     this.app.use('/Api/Producto', productoRoutes);
     this.app.use('/Api/Cliente', clienteRoutes);
+    this.app.use('/Api/Usuario', usuarioRoutes);
   }
 
   start() {
