@@ -3,12 +3,30 @@ import errorHandlerObject from '../../error/controllers/error.class';
 import { PrismaClient, usuario } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const bcrypt = require('bcryptjs');
 
 class UsuarioControllers {
   public async UpdateUsuario(req: Request, res: Response): Promise<void> {
     try {
       let { correo, contrasena, cedula, nombre, apellido, cargo } = req.body;
-      const usuario: usuario = await prisma.usuario.update({
+
+      const usuario = await prisma.usuario.findUnique({
+        where: { correo: correo },
+      });
+
+      contrasena = await UsuarioControllers.encryptPassword(contrasena);
+
+      // Se verifica si no hay parametros en la ruta, de ser el caso, se arroja un error
+      if (correo == null) throw new Error('Correo Undefined');
+
+      //se verifica si el usuario existe
+      if (usuario == null) throw new Error('Usuario not found');
+
+      //se verifica el estado del usuario
+      if (!usuario.estado) throw new Error('Usuario not avaible');
+
+      //actualizamos al Usuario
+      await prisma.usuario.update({
         where: {
           correo: correo,
         },
@@ -24,7 +42,7 @@ class UsuarioControllers {
     } catch (error) {
       let Error: object = await errorHandlerObject.ErrorHandler(
         error,
-        'UpsertUsuario (Controller)',
+        'UpdateUsuario (Controller)',
         true,
       );
       res.status(500).json(Error);
@@ -34,9 +52,8 @@ class UsuarioControllers {
   public async GetUsuario(req: Request, res: Response): Promise<void> {
     try {
       const { correo } = req.params;
-      // Se verifica si no hay parametros en la ruta, de ser el caso, se arroja un error
-      if (correo == null) throw new Error('Correo Undefined');
 
+      //obtenemos al usuario
       const usuario = await prisma.usuario.findUnique({
         where: { correo: correo },
         select: {
@@ -46,10 +63,21 @@ class UsuarioControllers {
           nombre: true,
           apellido: true,
           cargo: true,
+          estado: true,
           createdAt: true,
           updatedAt: true,
         },
       });
+
+      // Se verifica si no hay parametros en la ruta, de ser el caso, se arroja un error
+      if (correo == null) throw new Error('Correo Undefined');
+
+      //se verifica si el usuario existe
+      if (usuario == null) throw new Error('Usuario not found');
+
+      //se verifica el estado del usuario
+      if (!usuario.estado) throw new Error('Usuario not avaible');
+
       res.status(200).json({ data: usuario });
     } catch (error) {
       let Error: object = await errorHandlerObject.ErrorHandler(
@@ -64,9 +92,21 @@ class UsuarioControllers {
   public async DeleteUsuario(req: Request, res: Response): Promise<void> {
     try {
       const { correo } = req.body;
+
+      const usuario = await prisma.usuario.findUnique({
+        where: { correo: correo },
+      });
+
       // Se verifica si no hay parametros en la ruta, de ser el caso, se arroja un error
       if (correo == null) throw new Error('Correo Undefined');
 
+      //se verifica si el usuario existe
+      if (usuario == null) throw new Error('Usuario not found');
+
+      //se verifica el estado del usuario
+      if (!usuario.estado) throw new Error('Usuario not avaible');
+
+      //se cambia el estado del Usuario
       await prisma.usuario.update({
         where: { correo: correo },
         data: {
@@ -82,6 +122,11 @@ class UsuarioControllers {
       );
       res.status(500).json(Error);
     }
+  }
+
+  static async encryptPassword(password: any): Promise<any> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
   }
 }
 

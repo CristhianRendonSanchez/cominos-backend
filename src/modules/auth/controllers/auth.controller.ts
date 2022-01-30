@@ -13,16 +13,28 @@ class AuthControllers {
     try {
       let { correo, contrasena, cedula, nombre, apellido, cargo } = req.body;
 
+      let usuario = await prisma.usuario.findUnique({
+        where: { correo: correo },
+      });
+
+      //se verifica si el correo de entrada está vacio
       if (correo == null) throw new Error('correo Undefined');
 
-      if (
-        (await prisma.usuario.findUnique({ where: { correo: correo } })) != null
-      )
-        throw new Error('correo is already exists');
+      //se verifica si el usuario existe
+      if (usuario != null) {
+        //se verifica el estado del usuario
+        if (!usuario.estado) {
+          throw new Error('Usuario already exist and not avaible');
+        } else {
+          throw new Error('Usuario already exist');
+        }
+      }
 
+      //se encripta la contrasena
       contrasena = await AuthControllers.encryptPassword(contrasena);
 
-      const usuario = await prisma.usuario.create({
+      //se crea al usuario
+      usuario = await prisma.usuario.create({
         data: {
           correo: correo,
           contrasena: contrasena,
@@ -33,9 +45,11 @@ class AuthControllers {
         },
       });
 
+      //se instancia un token para el usuario.
       const token = jwt.sign({ id: usuario.id }, process.env.SECRET, {
         expiresIn: 60 * 60 * 24,
       });
+
       res.status(200).json({ auth: true, token: token });
     } catch (error) {
       let Error: object = await errorHandlerObject.ErrorHandler(
@@ -58,13 +72,16 @@ class AuthControllers {
           cedula: true,
           nombre: true,
           apellido: true,
+          estado: true,
           cargo: true,
         },
       });
 
-      if (!usuario) {
-        res.status(404).send('usuario not found');
-      }
+      //se verifica si se encontró al usuario
+      if (!usuario) throw new Error('usuario not found');
+
+      //se verifica el estado del usuario
+      if (!usuario.estado) throw new Error('Usuario not avaible');
 
       res.status(200).json(usuario);
     } catch (error) {
@@ -81,21 +98,28 @@ class AuthControllers {
     try {
       let { correo, contrasena } = req.body;
 
-      if (correo == null) throw new Error('correo Undefined');
-
       const usuario = await prisma.usuario.findUnique({
         where: { correo: correo },
       });
 
+      //se verifica si el correo de entrada está vacio
+      if (correo == null) throw new Error('correo Undefined');
+
+      //se verifica si el correo no existe
       if (usuario == null) throw new Error('correo doesnt exist');
 
+      //se verifica el estado del usuario
+      if (!usuario.estado) throw new Error('Usuario not avaible');
+
+      //se valida la contraseña ingresada
       const contrasenaValidacion = await AuthControllers.validatePassword(
         contrasena,
         usuario.contrasena,
       );
 
+      //se verifica si la contraseña ingresada es invalida
       if (!contrasenaValidacion) {
-        res.status(401).json({ auth: false, token: null });
+        throw new Error('contraseña invalida');
       } else {
         const token = jwt.sign({ id: usuario.id }, process.env.SECRET, {
           expiresIn: 60 * 60 * 24,
