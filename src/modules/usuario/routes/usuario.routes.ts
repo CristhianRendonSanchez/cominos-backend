@@ -10,9 +10,9 @@ class UsuarioRoutes {
   }
 
   routes() {
-    this.router.post('/UpsertUsuario', usuarioControllers.UpsertUsuario);
+    this.router.put('/UpdateUsuario', usuarioControllers.UpdateUsuario);
     this.router.get('/GetUsuario/:correo', usuarioControllers.GetUsuario);
-    this.router.delete('/DeleteUsuario', usuarioControllers.DeleteUsuario);
+    this.router.put('/DeleteUsuario', usuarioControllers.DeleteUsuario);
   }
 }
 
