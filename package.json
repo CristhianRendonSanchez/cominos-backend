@@ -1,13 +1,17 @@
 {
   "name": "cominos-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x",
+    "npm": "8.x"
+  },
   "description": "",
   "main": "index.js",
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"nodemon build/index.js\" ",
+    "dev": "concurrently \"tsc --watch\" \"nodemon dist/src/index.js\"",
     "build": "tsc",
     "start": "tsc && node build/index.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -17,6 +21,7 @@
   "author": "Cristhian",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^3.7.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^7.0.0",
     "cors": "^2.8.5",
