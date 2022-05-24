@@ -17,6 +17,7 @@ model producto {
   registro_invima String 
   fechafabricacion DateTime
   fecha_vencimiento DateTime
+  categoria String
   lote Int
   descripcion String
   createdAt DateTime @default(now())
@@ -73,4 +74,16 @@ model cliente  {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+}
+model usuario {
+  id String @id @default(cuid())
+  correo String @unique
+  contrasena String
+  cedula String @unique
+  nombre String
+  apellido String
+  cargo String
+  estado Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
