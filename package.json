@@ -11,6 +11,8 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
+    "tsc": "tsc",
+    "postinstall": "npm run tsc",
     "dev": "concurrently \"tsc --watch\" \"nodemon dist/src/index.js\"",
     "build": "tsc",
     "start": "tsc && node build/index.js",
