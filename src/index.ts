@@ -18,7 +18,7 @@ class Server {
   }
   settings() {
     dotenv.config({ path: join(__dirname, '../.env') });
-    this.app.set('port', process.env.PORT || 4000);
+    this.app.set('port', process.env.PORT || 3000);
     console.log(process.env.PORT);
   }
   routes() {
@@ -34,7 +34,7 @@ class Server {
   }
 
   start() {
-    const Puerto = this.app.get('port');
+    const Puerto = process.env.PORT || 3000;
     this.app.listen(Puerto, () => {
       console.log(`Servidor iniciado en http://localhost:${Puerto}`);
     });
