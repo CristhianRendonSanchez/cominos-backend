@@ -35,6 +35,19 @@ model errores  {
   updatedAt DateTime @updatedAt
 
 }
+model pedido  {
+  codigo      String @id @default(cuid())
+  fecha DateTime
+  producto String
+  valor Int
+  descripcion String
+  nombre String
+  ciudad String
+  departamento String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
 
 model venta  {
   codigo      String @id @default(cuid())
@@ -45,19 +58,13 @@ model venta  {
   lugar String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  CONSTRAINT fk_pedido
+        FOREIGN KEY (pedido_codigo )
+        REFERENCES pedido(codigo)
 
 }
-model pedido  {
-  codigo      String @id @default(cuid())
-  fecha DateTime
-  valor Int
-  descripcion String
-  nombre String
-  lugar String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-}
+
 model cliente  {
   cedula     String @id @default(cuid())
   ciudad String
