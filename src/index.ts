@@ -7,12 +7,14 @@ import clienteRoutes from './modules/cliente/routes/cliente.routes';
 import usuarioRoutes from './modules/usuario/routes/usuario.routes';
 import authRoutes from './modules/auth/routes/auth.routes';
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 class Server {
   private app: Application;
 
   constructor() {
     this.app = express();
+    this.app.use(cors());
     this.routes();
     this.settings();
   }
@@ -22,7 +24,6 @@ class Server {
     console.log(process.env.PORT);
   }
   routes() {
-    
     this.app.use(bodyParser.json()) // for parsing application/json
     this.app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -34,7 +35,11 @@ class Server {
   }
 
   start() {
+<<<<<<< Updated upstream
     const Puerto = this.app.get('port');
+=======
+    const Puerto = process.env.PORT || 4000;
+>>>>>>> Stashed changes
     this.app.listen(Puerto, () => {
       console.log(`Servidor iniciado en http://localhost:${Puerto}`);
     });
